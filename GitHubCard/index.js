@@ -3,6 +3,31 @@
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+import axios from 'axios'
+
+const followersArray = [
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+]
+
+followersArray.forEach( name => {
+  axios.get(`https://api.github.com/users/${name}`)
+      .then( response => {
+        // Pass the data received from Github into your function,
+      // and append the returned markup to the DOM as a child of .cards
+        const markup = myFunction(response.data)
+        // console.log(markup)
+        document.querySelector('.cards').append(markup)
+  
+      })
+      .catch( error => console.log('Error: ', error))
+})
+
+
+
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -28,7 +53,43 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+
+function myFunction(dataObj) {
+  const parentDiv = document.createElement('div')
+  parentDiv.classList.add('card')
+
+  const img = document.createElement('img')
+  img.src = dataObj.avatar_url
+  parentDiv.append(img)
+
+  const card = document.createElement('div')
+  card.classList.add('card-info')
+  const name = document.createElement('h3')
+  name.classList.add('name')
+  name.textContent = dataObj.name
+  const username = document.createElement('p')
+  username.classList.add('username')
+  username.textContent = dataObj.login
+  const location = document.createElement('p')
+  location.textContent = `Location: ${dataObj.location}`
+  const profile = document.createElement('p')
+  profile.textContent = 'Profile: '
+  const profileLink = document.createElement('a')
+  profileLink.href = dataObj.html_url
+  profileLink.textContent = dataObj.html_url
+  profile.append(profileLink)
+  const followers = document.createElement('p')
+  followers.textContent = `Followers: ${dataObj.followers}`
+  const following = document.createElement('p')
+  following.textContent = `Following: ${dataObj.following}`
+  const bio = document.createElement('p')
+  bio.textContent = `Bio: ${dataObj.bio}`
+
+  card.append(name, username, location, profile, followers, following, bio)
+  parentDiv.append(card)
+
+  return parentDiv
+}
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
